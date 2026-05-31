@@ -3,6 +3,8 @@
 
 #include "DNest4/code/DNest4.h"
 #include <ostream>
+#include "GaussianProcess.h"
+#include "Data.h"
 
 namespace Oscillarium
 {
@@ -11,8 +13,17 @@ class MyModel
 {
     private:
 
+        // Dataset
+        static Data data;
+
         // Amplitude, period, quality
         double a, f, q;
+
+        // Derived parameters
+        double S0, w0;
+        void compute_derived_parameters();
+
+        GaussianProcess gp;
 
     public:
         // Constructor only gives size of params

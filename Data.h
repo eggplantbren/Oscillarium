@@ -17,7 +17,7 @@ class Data
         Data() = delete;
         Data(const std::string& filename);
 
-
+    friend class MyModel;
 };
 
 } // namespace
