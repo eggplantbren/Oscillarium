@@ -18,18 +18,17 @@ rng.seed(123)
 
 # SDE
 dt = 1E-3
+skip = 100
 y = 0.0
 v = 0.0
 t = 0.0
-keep = np.empty(100000)
-data = np.empty((1000, 3))
-for i in range(len(keep)):
+data = np.empty((10000, 3))
+for i in range(skip*data.shape[0]):
     y = y + dt*v
     v = v - dt*y - 0.1*dt*v + np.sqrt(dt)*rng.randn()
     t += dt
-    keep[i] = y
-    if i % 100 == 0:
-        data[i // 100, :] = [t, y + 0.5*rng.randn(), 0.5]
+    if i % skip == 0:
+        data[i // skip, :] = [t, y + 0.5*rng.randn(), 0.5]
 np.savetxt("data.txt", data)
 plt.errorbar(data[:,0], data[:,1], yerr=data[:,2], fmt="o")
 plt.show()
