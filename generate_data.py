@@ -24,8 +24,24 @@ v = 0.0
 t = 0.0
 data = np.empty((10000, 3))
 for i in range(skip*data.shape[0]):
-    y = y + dt*v
-    v = v - dt*y - 0.1*dt*v + np.sqrt(dt)*rng.randn()
+    # --- draw one Brownian increment ---
+    dW = np.sqrt(dt) * rng.randn()
+
+    # --- compute drift at current state ---
+    fy = v
+    fv = -y - 0.1*v
+
+    # --- predictor step (Euler–Maruyama) ---
+    y_pred = y + fy*dt + 0.0*dW          # no noise in y-equation
+    v_pred = v + fv*dt + 1.0*dW          # additive noise in v
+
+    # --- drift at predicted state ---
+    fy_pred = v_pred
+    fv_pred = -y_pred - 0.1*v_pred
+
+    # --- corrector step (average drifts, reuse same dW) ---
+    y = y + 0.5*(fy + fy_pred)*dt + 0.0*dW
+    v = v + 0.5*(fv + fv_pred)*dt + 1.0*dW
     t += dt
     if i % skip == 0:
         data[i // skip, :] = [t, y + 0.5*rng.randn(), 0.5]
